@@ -8,11 +8,13 @@ extract = URLExtract()
 
 
 # ================= FETCH STATS =================
-
 def fetch_stats(selected_user, df):
 
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
+
+    # Convert message column to string
+    df['message'] = df['message'].astype(str)
 
     num_messages = df.shape[0]
 
@@ -21,16 +23,27 @@ def fetch_stats(selected_user, df):
     for message in df['message']:
         words.extend(message.split())
 
+    # Media messages
     num_media_messages = df[
-        df['message'].str.contains('Media omitted', na=False)
+        df['message'].str.contains(
+            'Media omitted',
+            na=False
+        )
     ].shape[0]
 
+    # Links
     links = []
 
     for message in df['message']:
         links.extend(extract.find_urls(message))
 
-    return num_messages, len(words), num_media_messages, len(links)
+    return (
+        num_messages,
+        len(words),
+        num_media_messages,
+        len(links)
+    )
+
 
 
 # ================= MOST BUSY USERS =================
