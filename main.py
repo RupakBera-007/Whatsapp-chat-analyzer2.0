@@ -320,6 +320,7 @@ if uploaded_file is not None:
 
             st.pyplot(fig)
 
+        
         # ================= HEATMAP =================
 
         st.title("🗓 Weekly Activity Heatmap")
@@ -329,15 +330,25 @@ if uploaded_file is not None:
             df
         )
 
-        fig, ax = plt.subplots(figsize=(12, 6))
+        if not user_heatmap.empty:
 
-        sns.heatmap(
-            user_heatmap,
-            cmap='YlGnBu',
-            ax=ax
-        )
+            fig, ax = plt.subplots(figsize=(10, 5))
 
-        st.pyplot(fig)
+            sns.heatmap(
+                user_heatmap,
+                cmap='YlGnBu',
+                ax=ax
+            )
+
+            st.pyplot(fig)
+
+        else:
+
+            st.warning(
+                "No activity data available for heatmap."
+            )
+    
+
 
         # ================= BUSY USERS =================
 
