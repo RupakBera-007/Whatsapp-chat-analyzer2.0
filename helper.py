@@ -13,11 +13,13 @@ def fetch_stats(selected_user, df):
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 
-    # Convert message column to string
-    df['message'] = df['message'].astype(str)
+    # Force message column into string
+    df['message'] = df['message'].fillna('').astype(str)
 
+    # Total messages
     num_messages = df.shape[0]
 
+    # Total words
     words = []
 
     for message in df['message']:
@@ -25,9 +27,8 @@ def fetch_stats(selected_user, df):
 
     # Media messages
     num_media_messages = df[
-        df['message'].str.contains(
-            'Media omitted',
-            na=False
+        df['message'].apply(
+            lambda x: 'Media omitted' in x
         )
     ].shape[0]
 
@@ -43,7 +44,6 @@ def fetch_stats(selected_user, df):
         num_media_messages,
         len(links)
     )
-
 
 
 # ================= MOST BUSY USERS =================
