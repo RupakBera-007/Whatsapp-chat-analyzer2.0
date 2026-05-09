@@ -160,13 +160,15 @@ def emoji_helper(selected_user, df):
 
 # ================= MONTHLY TIMELINE =================
 
+
 def monthly_timeline(selected_user, df):
 
     if selected_user != 'Overall':
+
         df = df[df['user'] == selected_user]
 
     timeline = df.groupby(
-        ['year', 'month_num', 'month']
+        ['Year', 'month_num', 'Month']
     ).count()['message'].reset_index()
 
     time = []
@@ -174,14 +176,15 @@ def monthly_timeline(selected_user, df):
     for i in range(timeline.shape[0]):
 
         time.append(
-            timeline['month'][i] +
+            timeline['Month'][i] +
             "-" +
-            str(timeline['year'][i])
+            str(timeline['Year'][i])
         )
 
     timeline['time'] = time
 
     return timeline
+
 
 
 # ================= DAILY TIMELINE =================
