@@ -1,13 +1,12 @@
 import re
 import pandas as pd
 
+
 def preprocess(data):
 
-    # Universal WhatsApp Pattern
-    pattern = r'\d{1,2}[/-]\d{1,2}[/-]\d{2,4},\s\d{1,2}:\d{2}\s(?:am|pm|AM|PM)?\s?-\s'
+    pattern = r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s-\s'
 
     messages = re.split(pattern, data)[1:]
-
     dates = re.findall(pattern, data)
 
     df = pd.DataFrame({
@@ -15,60 +14,52 @@ def preprocess(data):
         'message_date': dates
     })
 
-    # Date conversion
     df['message_date'] = pd.to_datetime(
         df['message_date'],
+        format='%d/%m/%Y, %H:%M - ',
         errors='coerce'
     )
 
-    df.rename(
-        columns={'message_date': 'date'},
-        inplace=True
-    )
+    df.rename(columns={'message_date': 'date'}, inplace=True)
 
     users = []
     messages = []
 
     for message in df['user_message']:
 
-        entry = re.split(
-            r'([\w\W]+?):\s',
-            message
-        )
+        entry = re.split(r'([\w\W]+?):\s', message)
 
-        if len(entry) >= 3:
+        if len(entry) > 1:
 
             users.append(entry[1])
-
             messages.append(entry[2])
 
         else:
 
             users.append('group_notification')
-
-            messages.append(message)
+            messages.append(entry[0])
 
     df['user'] = users
-
     df['message'] = messages
 
-    # Remove null dates
-    df = df.dropna(subset=['date'])
+    df.drop(columns=['user_message'], inplace=True)
 
-    # Extra features
+    # ================= DATE FEATURES =================
+
     df['only_date'] = df['date'].dt.date
-    df['Year'] = df['date'].dt.year
+    df['year'] = df['date'].dt.year
     df['month_num'] = df['date'].dt.month
-    df['Month'] = df['date'].dt.month_name()
+    df['month'] = df['date'].dt.month_name()
+    df['day'] = df['date'].dt.day
     df['day_name'] = df['date'].dt.day_name()
-    df['Day'] = df['date'].dt.day
-    df['Hour'] = df['date'].dt.hour
-    df['Minutes'] = df['date'].dt.minute
+    df['hour'] = df['date'].dt.hour
+    df['minute'] = df['date'].dt.minute
 
-    # Time Period
+    # ================= PERIOD =================
+
     period = []
 
-    for hour in df['Hour']:
+    for hour in df['hour']:
 
         if hour == 23:
             period.append(f"{hour}-00")
@@ -79,6 +70,6 @@ def preprocess(data):
         else:
             period.append(f"{hour}-{hour+1}")
 
-    df['Period'] = period
+    df['period'] = period
 
     return df
