@@ -218,7 +218,7 @@ def monthly_activity_map(selected_user, df):
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 
-    return df['month'].value_counts()
+    return df['Month'].value_counts()
 
 
 # ================= HEATMAP =================
@@ -245,7 +245,7 @@ def most_active_hour(selected_user, df):
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 
-    return df['hour'].value_counts().sort_index()
+    return df['Hour'].value_counts().sort_index()
 
 
 # ================= AVG WORDS =================
