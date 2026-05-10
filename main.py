@@ -17,121 +17,213 @@ st.set_page_config(
     layout="wide"
 )
 
-# ================= PREMIUM CSS =================
 
 st.markdown("""
 <style>
 
-/* ================= APP ================= */
+/* MAIN BACKGROUND */
 
 .stApp {
-    background: linear-gradient(135deg,#020617,#0f172a);
+    background: linear-gradient(
+        135deg,
+        #000428,
+        #004e92
+    );
     color: white;
 }
 
-/* ================= CONTAINER ================= */
 
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-
-/* ================= SIDEBAR ================= */
+/* SIDEBAR */
 
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#111827,#1e293b);
-    border-right: 2px solid #334155;
+    background: linear-gradient(
+        180deg,
+        #111827,
+        #0f172a
+    );
+    border-right: 2px solid #1e293b;
 }
 
-/* ================= TITLES ================= */
 
-.main-title {
-    text-align: center;
-    font-size: 52px;
-    font-weight: bold;
-    background: linear-gradient(to right,#38bdf8,#22c55e);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 10px;
+/* SIDEBAR TEXT */
+
+section[data-testid="stSidebar"] * {
+    color: white !important;
 }
 
-.subtitle {
-    text-align: center;
-    color: #cbd5e1;
-    font-size: 18px;
-    margin-bottom: 35px;
+
+/* TITLE */
+
+h1 {
+    color: #22d3ee !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px;
 }
 
-/* ================= METRIC CARDS ================= */
+
+/* SUBHEADINGS */
+
+h2, h3 {
+    color: #f8fafc !important;
+    font-weight: 700 !important;
+}
+
+
+/* METRIC CARDS */
 
 [data-testid="metric-container"] {
-    background: rgba(30,41,59,0.7);
-    border-radius: 22px;
-    padding: 22px;
-    border: 1px solid rgba(255,255,255,0.08);
-    backdrop-filter: blur(12px);
-    box-shadow: 0px 10px 25px rgba(0,0,0,0.35);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.4);
     transition: 0.3s;
 }
 
 [data-testid="metric-container"]:hover {
     transform: translateY(-5px);
-    border: 1px solid #38bdf8;
+    box-shadow: 0px 8px 30px rgba(0,0,0,0.5);
 }
 
-/* ================= BUTTON ================= */
+
+/* BUTTON */
 
 .stButton > button {
     width: 100%;
-    border-radius: 14px;
-    border: none;
-    background: linear-gradient(90deg,#2563eb,#38bdf8);
+    background: linear-gradient(
+        90deg,
+        #2563eb,
+        #38bdf8
+    );
     color: white;
-    font-size: 16px;
-    font-weight: bold;
+    border: none;
+    border-radius: 14px;
     padding: 12px;
+    font-size: 17px;
+    font-weight: bold;
     transition: 0.3s;
 }
 
 .stButton > button:hover {
     transform: scale(1.03);
-    box-shadow: 0px 0px 15px rgba(56,189,248,0.5);
+    background: linear-gradient(
+        90deg,
+        #38bdf8,
+        #2563eb
+    );
 }
 
-/* ================= FILE UPLOADER ================= */
+
+/* FILE UPLOADER */
 
 [data-testid="stFileUploader"] {
-    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
     border: 2px dashed #38bdf8;
-    background-color: rgba(15,23,42,0.8);
+    border-radius: 18px;
     padding: 15px;
 }
 
-/* ================= DATAFRAME ================= */
+
+/* DATAFRAME */
 
 [data-testid="stDataFrame"] {
-    border-radius: 18px;
+    border-radius: 15px;
     overflow: hidden;
 }
 
-/* ================= HIDE STREAMLIT ================= */
 
-#MainMenu {
-    visibility: hidden;
+/* PLOTS */
+
+.plot-container {
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-footer {
-    visibility: hidden;
+
+/* SUCCESS MESSAGE */
+
+.stSuccess {
+    border-radius: 15px;
 }
 
-header {
-    visibility: hidden;
+
+/* WARNING */
+
+.stWarning {
+    border-radius: 15px;
+}
+
+
+/* DOWNLOAD BUTTON */
+
+.stDownloadButton > button {
+    width: 100%;
+    background: linear-gradient(
+        90deg,
+        #10b981,
+        #22c55e
+    );
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #38bdf8;
+    border-radius: 10px;
+}
+
+
+/* SIDEBAR TOGGLE FIX */
+
+[data-testid="collapsedControl"] {
+    display: block !important;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 99999;
+    background: #00C9A7;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    h1 {
+        font-size: 32px !important;
+    }
+
+    h2 {
+        font-size: 26px !important;
+    }
+
+    .stButton > button {
+        font-size: 15px;
+    }
+
 }
 
 </style>
 """, unsafe_allow_html=True)
+
 
 # ================= HERO SECTION =================
 
