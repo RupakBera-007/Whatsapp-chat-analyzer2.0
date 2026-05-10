@@ -256,8 +256,6 @@ st.sidebar.markdown(
     ### 👨‍💻 Developer
 
     **Rupak Bera**
-
-    Built with Streamlit & Python
     """
 )
 
