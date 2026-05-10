@@ -1,66 +1,120 @@
 import re
 import pandas as pd
 
+
 def preprocess(data):
 
-    # Universal WhatsApp Pattern
-    pattern = r'\d{1,2}[/-]\d{1,2}[/-]\d{2,4},\s\d{1,2}:\d{2}(?:\s?[apAP][mM])?\s-\s'
+    # ALL POSSIBLE WHATSAPP DATE-TIME FORMATS
+    patterns = [
+        r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s?[apAP][mM]\s-\s',
+        r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s-\s',
+        r'\[\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}:\d{2}\s?[APap][mM]\]',
+        r'\d{1,2}-\d{1,2}-\d{2,4},\s\d{1,2}:\d{2}\s?[APap][mM]\s-\s'
+    ]
 
-    # Extract messages and dates
-    messages = re.split(pattern, data)[1:]
+    messages = []
+    dates = []
 
-    dates = re.findall(pattern, data)
+    used_pattern = None
 
-    # Create DataFrame
+    # Detect working pattern
+    for pattern in patterns:
+
+        test_messages = re.split(pattern, data)
+
+        if len(test_messages) > 1:
+            used_pattern = pattern
+            break
+
+    if used_pattern is None:
+        return pd.DataFrame(columns=[
+            'date', 'user', 'message',
+            'only_date', 'Year', 'month_num',
+            'Month', 'day_name', 'Day',
+            'Hour', 'Minutes', 'Period'
+        ])
+
+    messages = re.split(used_pattern, data)[1:]
+    dates = re.findall(used_pattern, data)
+
     df = pd.DataFrame({
         'user_message': messages,
         'message_date': dates
     })
 
-    # Convert dates safely
-    df['message_date'] = pd.to_datetime(
-        df['message_date'],
-        errors='coerce',
-        dayfirst=True
+    # CLEAN DATE
+    df['message_date'] = (
+        df['message_date']
+        .str.replace('[', '', regex=False)
+        .str.replace(']', '', regex=False)
+        .str.strip()
     )
 
-    # Rename column
-    df.rename(
-        columns={'message_date': 'date'},
-        inplace=True
-    )
+    # MULTIPLE DATE FORMAT SUPPORT
+    parsed = None
+
+    formats = [
+        '%d/%m/%Y, %I:%M %p -',
+        '%d/%m/%y, %I:%M %p -',
+        '%d/%m/%Y, %H:%M -',
+        '%d/%m/%y, %H:%M -',
+        '%d-%m-%Y, %I:%M %p -',
+        '%d-%m-%y, %I:%M %p -',
+        '%d/%m/%Y, %I:%M:%S %p',
+        '%d/%m/%y, %I:%M:%S %p'
+    ]
+
+    for fmt in formats:
+
+        try:
+            parsed = pd.to_datetime(
+                df['message_date'],
+                format=fmt,
+                errors='raise'
+            )
+
+            break
+
+        except:
+            continue
+
+    # FALLBACK
+    if parsed is None:
+        parsed = pd.to_datetime(
+            df['message_date'],
+            errors='coerce'
+        )
+
+    df['date'] = parsed
+
+    df.dropna(subset=['date'], inplace=True)
 
     users = []
     messages = []
 
-    # Extract users and messages
     for message in df['user_message']:
 
-        entry = re.split(
-            r'([\w\W]+?):\s',
-            message
-        )
+        entry = re.split(r'([\w\W]+?):\s', message)
 
         if len(entry) >= 3:
 
             users.append(entry[1])
-
             messages.append(entry[2])
 
         else:
 
             users.append('group_notification')
-
             messages.append(message)
 
-    # Add columns
     df['user'] = users
     df['message'] = messages
 
-    # Remove null dates
-    df.dropna(subset=['date'], inplace=True)
+    df.drop(columns=['user_message'], inplace=True)
 
-    # Time Features
+    # FORCE STRING
+    df['message'] = df['message'].astype(str)
+
+    # DATE FEATURES
     df['only_date'] = df['date'].dt.date
     df['Year'] = df['date'].dt.year
     df['month_num'] = df['date'].dt.month
@@ -70,23 +124,21 @@ def preprocess(data):
     df['Hour'] = df['date'].dt.hour
     df['Minutes'] = df['date'].dt.minute
 
-    # Period Column
+    # PERIOD
     period = []
 
     for hour in df['Hour']:
 
         if hour == 23:
-
             period.append("23-00")
 
         elif hour == 0:
-
-            period.append("00-1")
+            period.append("00-01")
 
         else:
-
             period.append(f"{hour}-{hour+1}")
 
     df['Period'] = period
 
     return df
+
