@@ -223,19 +223,27 @@ def monthly_activity_map(selected_user, df):
 
 # ================= HEATMAP =================
 
+
 def activity_heatmap(selected_user, df):
 
     if selected_user != 'Overall':
+
         df = df[df['user'] == selected_user]
+
+    # Prevent empty dataframe error
+    if df.empty:
+
+        return pd.DataFrame()
 
     user_heatmap = df.pivot_table(
         index='day_name',
-        columns='period',
+        columns='Period',
         values='message',
         aggfunc='count'
     ).fillna(0)
 
     return user_heatmap
+
 
 
 # ================= MOST ACTIVE HOUR =================
