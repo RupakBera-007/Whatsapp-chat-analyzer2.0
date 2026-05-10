@@ -682,30 +682,175 @@ if uploaded_file is not None:
 
             # ================= DOWNLOAD REPORT =================
 
+            # ================= DOWNLOAD ANALYSIS REPORT =================
+
             st.title("⬇ Download Analysis Report")
 
+            from datetime import datetime
+
+            # Current Time
+            current_time = datetime.now().strftime("%d-%m-%Y %I:%M %p")
+
+            # Most common words
+            common_words_text = ""
+
+            try:
+                top_words = most_common_df.head(10)
+
+                for index, row in top_words.iterrows():
+                    common_words_text += f"{row[0]} : {row[1]}\n"
+
+            except:
+                common_words_text = "No common words data available"
+
+            # Emoji Summary
+            emoji_text = ""
+
+            try:
+                top_emojis = emoji_df.head(10)
+
+                for index, row in top_emojis.iterrows():
+                    emoji_text += f"{row[0]} : {row[1]}\n"
+
+            except:
+                emoji_text = "No emoji data available"
+
+            # Busy day/month/hour
+
+            try:
+                top_day = busy_day.idxmax()
+            except:
+                top_day = "N/A"
+
+            try:
+                top_month = busy_month.idxmax()
+            except:
+                top_month = "N/A"
+
+            try:
+                top_hour = active_hour.idxmax()
+            except:
+                top_hour = "N/A"
+
+            # Most active user
+
+            most_active_user = "N/A"
+
+            if selected_user == "Overall":
+                try:
+                    most_active_user = df['user'].value_counts().idxmax()
+                except:
+                    most_active_user = "N/A"
+
+            # Sentiment Summary
+
+            sentiment_text = ""
+
+            try:
+                for index, row in sentiment_df.iterrows():
+
+                    sentiment_text += f"""
+            {row['Sentiment']} Messages : {row['Count']}
+            """
+
+            except:
+                sentiment_text = "No sentiment data available"
+
+            # Final Report
+
             report = f"""
-WHATSAPP CHAT ANALYSIS REPORT
-====================================
 
-Selected User: {selected_user}
+            ╔══════════════════════════════════════════════╗
+                    WHATSAPP CHAT ANALYSIS REPORT
+            ╚══════════════════════════════════════════════╝
 
-------------------------------------
-BASIC STATISTICS
-------------------------------------
+            Generated On : {current_time}
 
-Total Messages : {num_messages}
+            Selected User : {selected_user}
 
-Total Words : {words}
+            ================================================
+            📊 BASIC STATISTICS
+            ================================================
 
-Media Shared : {num_media_messages}
+            📩 Total Messages        : {num_messages}
 
-Links Shared : {num_links}
+            📝 Total Words           : {words}
 
-Average Words Per Message : {avg_words}
+            🎞 Media Shared          : {num_media_messages}
 
-====================================
-"""
+            🔗 Links Shared          : {num_links}
+
+            📚 Average Words/Message : {avg_words}
+
+            ================================================
+            🔥 ACTIVITY INSIGHTS
+            ================================================
+
+            📅 Most Active Day       : {top_day}
+
+            🗓 Most Active Month     : {top_month}
+
+            ⏰ Most Active Hour      : {top_hour}
+
+            👑 Most Active User      : {most_active_user}
+
+            ================================================
+            😊 SENTIMENT ANALYSIS
+            ================================================
+
+            {sentiment_text}
+
+            ================================================
+            ☁ MOST COMMON WORDS
+            ================================================
+
+            {common_words_text}
+
+            ================================================
+            😂 TOP EMOJIS USED
+            ================================================
+
+            {emoji_text}
+
+            ================================================
+            📌 PROJECT INFORMATION
+            ================================================
+
+            Project Name :
+            WhatsApp Chat Analyzer
+
+            Developed Using :
+            ✔ Python
+            ✔ Streamlit
+            ✔ Pandas
+            ✔ Matplotlib
+            ✔ Plotly
+            ✔ Seaborn
+            ✔ NLP
+
+            Features :
+            ✔ Timeline Analysis
+            ✔ Emoji Analysis
+            ✔ Sentiment Analysis
+            ✔ Heatmap
+            ✔ WordCloud
+            ✔ Activity Tracking
+            ✔ ZIP Support
+            ✔ TXT Support
+
+            ================================================
+            👨‍💻 DEVELOPER
+            ================================================
+
+            Rupak Bera
+
+            ================================================
+            ✅ REPORT GENERATED SUCCESSFULLY
+            ================================================
+
+            """
+
+            # Download Button
 
             st.download_button(
                 label="📥 Download Full Analysis Report",
