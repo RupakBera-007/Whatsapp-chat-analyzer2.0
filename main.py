@@ -859,8 +859,89 @@ if uploaded_file is not None:
                 mime="text/plain"
             )
 
+
 else:
 
-    st.info(
-        "📤 Upload a WhatsApp exported TXT or ZIP file to begin analysis."
+    st.markdown(
+        """
+        <div style="
+            background: rgba(255,255,255,0.08);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 20px;
+        ">
+        <h1 style='text-align:center;color:#22d3ee;'>
+        📱 Welcome to WhatsApp Chat Analyzer
+        </h1>
+
+        <p style='text-align:center;font-size:18px;color:white;'>
+        Analyze your WhatsApp chats with beautiful insights,
+        timelines, emoji analysis, sentiment analysis,
+        activity heatmaps and more.
+        </p>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
+
+    st.markdown("## 📤 How To Export WhatsApp Chat")
+
+    st.markdown("""
+### 📱 On Android
+
+1. Open WhatsApp
+2. Open the chat/group
+3. Click ⋮ (3 dots)
+4. Tap **More**
+5. Tap **Export Chat**
+6. Choose **Without Media**
+7. Save the TXT or ZIP file
+
+---
+
+### 🍎 On iPhone
+
+1. Open WhatsApp
+2. Open the chat/group
+3. Tap Contact/Group Name
+4. Scroll down
+5. Tap **Export Chat**
+6. Choose **Without Media**
+7. Save the TXT or ZIP file
+
+---
+""")
+
+    st.markdown("## ⬆ Upload Chat File")
+
+    st.info(
+        """
+✅ Upload exported WhatsApp TXT file
+
+OR
+
+✅ Upload ZIP file directly
+
+The app automatically detects and analyzes the chat.
+"""
+    )
+
+    st.markdown("## ✨ Features")
+
+    st.markdown("""
+✔ Chat Statistics  
+✔ Monthly Timeline  
+✔ Daily Timeline  
+✔ Activity Heatmap  
+✔ WordCloud  
+✔ Emoji Analysis  
+✔ Sentiment Analysis  
+✔ Most Active User  
+✔ ZIP File Support  
+✔ TXT File Support  
+✔ Mobile Friendly UI  
+""")
+
+    st.success("🚀 Upload your chat file from the sidebar to begin analysis.")
+
